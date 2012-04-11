@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Configuration for POS--> 
+<POSConf>
+<!--applied currency unit--> 
+<currency>HK</currency>
+
+<!--discount strategies will be computed sequentially--> 
+<discount>
+<strategy type="event" value="0.05"></strategy>
+<strategy type="customer" value="0.10"></strategy>
+<strategy type="sales" value="0.2" value1="103.00"></strategy>
+<strategy type="product">
+<item id="ID002" value="0.15"></item>
+<item id="ID005" value="0.05"></item>
+<item id="ID009" value="0.25"></item>
+</strategy>
+</discount>
+
+</POSConf>
