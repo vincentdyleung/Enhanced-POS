@@ -13,6 +13,7 @@ public class Loader {
 			System.exit(-1);
 		}
 		LoginDialog login = new LoginDialog();
+		login.setLocationRelativeTo(null);
 		login.setVisible(true);
 	}
 }
