@@ -34,6 +34,7 @@ public class POSDialog extends JDialog {
 	private JCheckBox vipCheckBox;
 	private JList productList;
 	private JList shoppingCartList;
+	private DefaultListModel shoppingCartListModel;
 	
 	public POSDialog() {
 		idInput = new JTextField(20);
@@ -57,18 +58,19 @@ public class POSDialog extends JDialog {
 		idInputPanel.add(amountIDInput);
 		idInputPanel.add(addButton);
 		
-		JScrollPane selectPane = new JScrollPane();
+		
 		DefaultListModel productListModel = new DefaultListModel();
 		HashMap<String, Item> products = ItemList.getInstance().getItems();
 		Iterator<Entry<String, Item>> it = products.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, Item> pairs = (Map.Entry<String, Item>) it.next();
-			productListModel.addElement(pairs.getValue());
+			System.out.println(pairs.getValue().getItemName());
+			productListModel.addElement(pairs.getValue().getItemName());
 		}
 		productList = new JList(productListModel);
 		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		productList.setVisibleRowCount(20);
-		selectPane.add(productList);
+		JScrollPane selectPane = new JScrollPane(productList);
 		
 		JPanel selectButtonsPanel = new JPanel();
 		selectButtonsPanel.setLayout(new GridLayout(5, 1, 5, 5));
@@ -78,15 +80,14 @@ public class POSDialog extends JDialog {
 		selectButtonsPanel.add(toLeftButton);
 		selectButtonsPanel.add(clearButton);
 		
-		JScrollPane shoppingCartPane = new JScrollPane();
-		shoppingCartPane.add(shoppingCartList);
+		shoppingCartListModel = new DefaultListModel();
+		JScrollPane shoppingCartPane = new JScrollPane(shoppingCartList);
 		
 		JPanel payPanel = new JPanel();
 		JLabel vipLabel = new JLabel("Is VIP?");
 		payPanel.add(vipLabel);
 		payPanel.add(vipCheckBox);
 		payPanel.add(payButton);
-		
 		
 		
 		this.setLayout(new BorderLayout());
@@ -96,5 +97,9 @@ public class POSDialog extends JDialog {
 		this.add(shoppingCartPane, BorderLayout.EAST);
 		this.add(payPanel, BorderLayout.SOUTH);
 		this.pack();
+	}
+	
+	private void addToCart(String itemID, int amount) {
+		Item addedItem = ItemList.getInstance().getItemById(itemID);
 	}
 }
