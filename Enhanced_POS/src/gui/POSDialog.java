@@ -2,15 +2,25 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
+
+import core.entities.Item;
+import core.entities.ItemList;
 
 public class POSDialog extends JDialog {
 	private JTextField idInput;
@@ -22,9 +32,8 @@ public class POSDialog extends JDialog {
 	private JButton clearButton;
 	private JButton payButton;
 	private JCheckBox vipCheckBox;
-	private JScrollPane selectPane;
-	private JScrollPane shoppingCartPane;
-	private ListModel productList;
+	private JList productList;
+	private JList shoppingCartList;
 	
 	public POSDialog() {
 		idInput = new JTextField(20);
@@ -36,8 +45,8 @@ public class POSDialog extends JDialog {
 		clearButton = new JButton("Clear");
 		payButton = new JButton("Pay");
 		vipCheckBox = new JCheckBox();
-		selectPane = new JScrollPane();
-		shoppingCartPane = new JScrollPane();
+		
+		shoppingCartList = new JList();
 		
 		JLabel idLabel = new JLabel("ID:");
 		JLabel amountLabel = new JLabel("Amount:");
@@ -48,8 +57,18 @@ public class POSDialog extends JDialog {
 		idInputPanel.add(amountIDInput);
 		idInputPanel.add(addButton);
 		
-		JPanel selectPanel = new JPanel();
-		selectPanel.add(selectPane);
+		JScrollPane selectPane = new JScrollPane();
+		DefaultListModel productListModel = new DefaultListModel();
+		HashMap<String, Item> products = ItemList.getInstance().getItems();
+		Iterator<Entry<String, Item>> it = products.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Item> pairs = (Map.Entry<String, Item>) it.next();
+			productListModel.addElement(pairs.getValue());
+		}
+		productList = new JList(productListModel);
+		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		productList.setVisibleRowCount(20);
+		selectPane.add(productList);
 		
 		JPanel selectButtonsPanel = new JPanel();
 		selectButtonsPanel.setLayout(new GridLayout(5, 1, 5, 5));
@@ -59,8 +78,8 @@ public class POSDialog extends JDialog {
 		selectButtonsPanel.add(toLeftButton);
 		selectButtonsPanel.add(clearButton);
 		
-		JPanel shoppingCartPanel = new JPanel();
-		shoppingCartPanel.add(shoppingCartPane);
+		JScrollPane shoppingCartPane = new JScrollPane();
+		shoppingCartPane.add(shoppingCartList);
 		
 		JPanel payPanel = new JPanel();
 		JLabel vipLabel = new JLabel("Is VIP?");
@@ -68,9 +87,11 @@ public class POSDialog extends JDialog {
 		payPanel.add(vipCheckBox);
 		payPanel.add(payButton);
 		
+		
+		
 		this.setLayout(new BorderLayout());
 		this.add(idInputPanel, BorderLayout.NORTH);
-		this.add(selectPanel, BorderLayout.WEST);
+		this.add(selectPane, BorderLayout.WEST);
 		this.add(selectButtonsPanel, BorderLayout.CENTER);
 		this.add(shoppingCartPane, BorderLayout.EAST);
 		this.add(payPanel, BorderLayout.SOUTH);
