@@ -1,19 +1,19 @@
 package core;
 
+import gui.LoaderDialog;
 import conf.GlobalConfiguration;
-import gui.LoginDialog;
 
 public class Loader {
 	
-	private static GlobalConfiguration allConf;
+	private GlobalConfiguration allConf;
 	
-	public static void main(String[] args) {
+	public Loader() {
 		allConf = GlobalConfiguration.getInstance();
 		if (!allConf.load(null, null, null, null)) {
+			System.err.println("Configuration load error!");
 			System.exit(-1);
 		}
-		LoginDialog login = new LoginDialog();
-		login.setLocationRelativeTo(null);
-		login.setVisible(true);
+		LoaderDialog loaderDialog = new LoaderDialog();
+		loaderDialog.setVisible(true);
 	}
 }

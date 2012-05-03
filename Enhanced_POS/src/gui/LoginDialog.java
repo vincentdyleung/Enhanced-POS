@@ -51,10 +51,7 @@ public class LoginDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				int choice = JOptionPane.showConfirmDialog(null, "Exit POS?", "Confirm", JOptionPane.YES_NO_OPTION);
-				if (choice == JOptionPane.YES_OPTION) {
-					System.exit(0);
-				}
+				dispose();
 			}
 		});
 		
