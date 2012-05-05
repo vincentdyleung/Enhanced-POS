@@ -20,7 +20,6 @@ public class LoaderDialog extends JDialog {
 		
 		startButton.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				startPOS();
@@ -35,6 +34,7 @@ public class LoaderDialog extends JDialog {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				System.out.println("POS Exit");
 				System.exit(0);
 			}
 		});
@@ -42,6 +42,7 @@ public class LoaderDialog extends JDialog {
 	
 	private void startPOS() {
 		LoginDialog login = new LoginDialog();
+		login.setLocationRelativeTo(this);
 		login.setVisible(true);
 	}
 }

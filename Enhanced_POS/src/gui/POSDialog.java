@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -36,9 +38,10 @@ public class POSDialog extends JDialog {
 	private JButton clearButton;
 	private JButton payButton;
 	private JCheckBox vipCheckBox;
-	private JList productList;
-	private JList shoppingCartList;
-	private DefaultListModel shoppingCartListModel;
+	private JList<String> productList;
+	private JList<String> shoppingCartList;
+	private DefaultListModel<String> shoppingCartListModel;
+	private HashMap<String, Integer> orderList;
 	
 	public POSDialog() {
 		idInput = new JTextField(20);
@@ -50,8 +53,7 @@ public class POSDialog extends JDialog {
 		clearButton = new JButton("Clear");
 		payButton = new JButton("Pay");
 		vipCheckBox = new JCheckBox();
-		
-		shoppingCartList = new JList();
+		orderList = new HashMap<String, Integer>();
 		
 		JLabel idLabel = new JLabel("ID:");
 		JLabel amountLabel = new JLabel("Amount:");
@@ -63,14 +65,14 @@ public class POSDialog extends JDialog {
 		idInputPanel.add(addButton);
 		
 		
-		DefaultListModel productListModel = new DefaultListModel();
+		DefaultListModel<String> productListModel = new DefaultListModel<String>();
 		HashMap<String, Item> products = ItemList.getInstance().getItems();
 		Iterator<Entry<String, Item>> it = products.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, Item> pairs = (Map.Entry<String, Item>) it.next();
 			productListModel.addElement(pairs.getValue().getItemName());
 		}
-		productList = new JList(productListModel);
+		productList = new JList<String>(productListModel);
 		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		productList.setVisibleRowCount(20);
 		JScrollPane selectPane = new JScrollPane(productList);
@@ -83,7 +85,8 @@ public class POSDialog extends JDialog {
 		selectButtonsPanel.add(toLeftButton);
 		selectButtonsPanel.add(clearButton);
 		
-		shoppingCartListModel = new DefaultListModel();
+		shoppingCartListModel = new DefaultListModel<String>();
+		shoppingCartList = new JList<String>(shoppingCartListModel);
 		JScrollPane shoppingCartPane = new JScrollPane(shoppingCartList);
 		
 		JPanel payPanel = new JPanel();
@@ -93,15 +96,24 @@ public class POSDialog extends JDialog {
 		payPanel.add(payButton);
 		
 		toRightButton.addActionListener(new ActionListener() {
-
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				String selectedItemName = (String) productList.getSelectedValue();
+				String selectedItemName = productList.getSelectedValue();
 				Item selectedItem = ItemList.getInstance().getItemByName(selectedItemName);
 				addToCart(selectedItem, Integer.valueOf(amountClickInput.getText()));
 			}
-			
+		});
+		
+		toLeftButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				removeFromCart();
+			}
+		});
+		
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Item item = ItemList.getInstance().getItemById(idInput.getText());
+				addToCart(item, Integer.valueOf(amountIDInput.getText()));
+			}
 		});
 		
 		this.setLayout(new BorderLayout());
@@ -114,10 +126,28 @@ public class POSDialog extends JDialog {
 	}
 	
 	private void addToCart(Item item, int amount) {
-		Controller.getInstance().addToCart(item, amount);
-		float subTotal = item.getPrice() * amount;
-		DecimalFormat df = new DecimalFormat("##.0");
-		String cartDisplay = item.getItemName() + " "  + amount + " = " + df.format(subTotal);
-		shoppingCartListModel.addElement(cartDisplay);
+		orderList.put(item.getItemID(), amount);
+		updateShoppingCartList();
 	}
+	
+	private void removeFromCart() {
+		String selectedItemName = shoppingCartList.getSelectedValue().split(" ")[0];
+		String selectedItemID = ItemList.getInstance().getItemKeyByName(selectedItemName);
+		orderList.remove(selectedItemID);
+		updateShoppingCartList();
+	}
+	
+	private void updateShoppingCartList() {
+		shoppingCartListModel.clear();
+		DecimalFormat df = new DecimalFormat("##.0");
+		Iterator<Entry<String, Integer>> it = orderList.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Integer> pairs = it.next();
+			Item i = ItemList.getInstance().getItemById(pairs.getKey());
+			float subTotal = i.getPrice() * pairs.getValue();
+			String cartDisplay = i.getItemName() + " "  + pairs.getValue() + " = " + df.format(subTotal); 
+			shoppingCartListModel.addElement(cartDisplay);
+		}
+	}
+
 }

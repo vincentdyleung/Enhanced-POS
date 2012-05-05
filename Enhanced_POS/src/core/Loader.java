@@ -14,6 +14,7 @@ public class Loader {
 			System.exit(-1);
 		}
 		LoaderDialog loaderDialog = new LoaderDialog();
+		loaderDialog.setLocationRelativeTo(null);
 		loaderDialog.setVisible(true);
 	}
 }

@@ -48,7 +48,6 @@ public class LoginDialog extends JDialog {
 		buttonPanel.add(closeButton);
 		
 		closeButton.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				dispose();
@@ -57,7 +56,6 @@ public class LoginDialog extends JDialog {
 		
 		signinButton.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				String username = usernameInput.getText();
@@ -66,7 +64,9 @@ public class LoginDialog extends JDialog {
 					JOptionPane.showConfirmDialog(null, "Both Username and Password are required", "Error", JOptionPane.OK_OPTION);
 				} else {
 					if (users.verifyUser(username, password)) {
+						dispose();
 						POSDialog pos = new POSDialog();
+						pos.setLocationRelativeTo(LoginDialog.this);
 						pos.setVisible(true);
 					}
 				}
