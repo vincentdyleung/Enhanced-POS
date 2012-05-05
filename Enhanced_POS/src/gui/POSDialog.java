@@ -2,6 +2,9 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
+import core.Controller;
 import core.entities.Item;
 import core.entities.ItemList;
 
@@ -64,7 +68,6 @@ public class POSDialog extends JDialog {
 		Iterator<Entry<String, Item>> it = products.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, Item> pairs = (Map.Entry<String, Item>) it.next();
-			System.out.println(pairs.getValue().getItemName());
 			productListModel.addElement(pairs.getValue().getItemName());
 		}
 		productList = new JList(productListModel);
@@ -89,6 +92,17 @@ public class POSDialog extends JDialog {
 		payPanel.add(vipCheckBox);
 		payPanel.add(payButton);
 		
+		toRightButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				String selectedItemName = (String) productList.getSelectedValue();
+				Item selectedItem = ItemList.getInstance().getItemByName(selectedItemName);
+				addToCart(selectedItem, Integer.valueOf(amountClickInput.getText()));
+			}
+			
+		});
 		
 		this.setLayout(new BorderLayout());
 		this.add(idInputPanel, BorderLayout.NORTH);
@@ -99,7 +113,11 @@ public class POSDialog extends JDialog {
 		this.pack();
 	}
 	
-	private void addToCart(String itemID, int amount) {
-		Item addedItem = ItemList.getInstance().getItemById(itemID);
+	private void addToCart(Item item, int amount) {
+		Controller.getInstance().addToCart(item, amount);
+		float subTotal = item.getPrice() * amount;
+		DecimalFormat df = new DecimalFormat("##.0");
+		String cartDisplay = item.getItemName() + " "  + amount + " = " + df.format(subTotal);
+		shoppingCartListModel.addElement(cartDisplay);
 	}
 }
