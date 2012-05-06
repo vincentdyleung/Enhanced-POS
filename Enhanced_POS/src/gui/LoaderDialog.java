@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -16,7 +17,7 @@ public class LoaderDialog extends JDialog {
 	public LoaderDialog() {
 		startButton = new JButton("Start");
 		JLabel startButtonLabel = new JLabel("Start a new POS");
-		JPanel panel = new JPanel();
+		JPanel panel = new JPanel(new GridLayout(2, 1, 10, 10));
 		
 		startButton.addActionListener(new ActionListener() {
 

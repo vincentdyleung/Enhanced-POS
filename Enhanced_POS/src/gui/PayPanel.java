@@ -29,7 +29,6 @@ public class PayPanel extends JPanel {
 	private JTextField totalSum;
 	private JFormattedTextField paid;
 	private JTextField refund;
-	private JButton submitButton;
 	private boolean isVIP;
 	private POSDialog parentDialog;
 	private JList shoppingCartList;
@@ -47,7 +46,6 @@ public class PayPanel extends JPanel {
 		paid.setText("0.0");
 		refund = new JTextField("-");
 		refund.setEnabled(false);
-		submitButton = new JButton("Submit");
 		isVIP = _isVIP;
 		parentDialog = _parentDialog;
 		
@@ -55,18 +53,6 @@ public class PayPanel extends JPanel {
 		totalPrice.setText(df.format(Controller.getInstance().getTotalPrice()));
 		totalSum.setText(df.format(Controller.getInstance().getTotalSum(isVIP)));
 		discounted.setText(df.format(Controller.getInstance().getDiscounted(isVIP)));
-		
-		submitButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (Controller.getInstance().getRefund(Float.valueOf(paid.getText()), isVIP) < 0) {
-						parentDialog.setWarningMessage("Not enough money!");
-					}
-				} catch (NumberFormatException e) {
-					parentDialog.setWarningMessage("Please enter correct amount");
-				}
-			}
-		});
 		
 		paid.addKeyListener(new KeyListener() {
 
@@ -87,7 +73,10 @@ public class PayPanel extends JPanel {
 					float refundAmount = Controller.getInstance().getRefund(amountTyped, isVIP);
 					if (refundAmount >= 0) {
 						refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP)));
+					} else {
+						refund.setText("");
 					}
+					parentDialog.setWarningMessage("");
 				} catch (NumberFormatException ex) {
 					parentDialog.setWarningMessage("Please enter correct amount");
 				}
@@ -103,6 +92,7 @@ public class PayPanel extends JPanel {
 			String cartDisplay = item.getItemName() + " " + amount + " = " + df.format(subTotal);
 			shoppingCartListModel.addElement(cartDisplay);
 		}
+		
 		shoppingCartList = new JList(shoppingCartListModel);
 		JPanel textFieldPanel = new JPanel(new GridLayout(5, 2, 5, 5));
 		textFieldPanel.add(new JLabel("Total Price: HK$"));
@@ -119,7 +109,10 @@ public class PayPanel extends JPanel {
 		setLayout(new BorderLayout());
 		add(shoppingCartList, BorderLayout.WEST);
 		add(textFieldPanel, BorderLayout.EAST);
-		add(submitButton, BorderLayout.SOUTH);
 	}
-
+	
+	public float getPaidAmount() {
+		return Float.valueOf(paid.getText());
+	}
+	
 }

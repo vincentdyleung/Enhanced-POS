@@ -15,12 +15,14 @@ import javax.swing.JPanel;
 import core.Controller;
 import core.entities.UserList;
 
-public class POSDialog extends JDialog {
+public class POSDialog extends JDialog{
 
 	private JButton infoButton;
 	private JButton warningButton;
-	private POSPanel pos;
+	private POSPanel posPanel;
+	private PayPanel payPanel;
 	private JButton payButton;
+	private JButton submitButton;
 	private JCheckBox vipCheckBox;
 	private String username;
 	
@@ -29,17 +31,20 @@ public class POSDialog extends JDialog {
 		infoButton.setForeground(Color.BLUE);
 		payButton = new JButton("Pay");
 		vipCheckBox = new JCheckBox();
-		pos = new POSPanel(this);
+		posPanel = new POSPanel(this);
 		username = _username;
 		infoButton.setText("Record sale information succeeded by user " + username);
 		warningButton = new JButton();
 		warningButton.setForeground(Color.RED);
+		submitButton = new JButton("Submit");
 		
-		JPanel payPanel = new JPanel(new FlowLayout());
-		payPanel.add(new JLabel("Is VIP?"));
-		payPanel.add(vipCheckBox);
-		payPanel.add(payButton);
-		pos.add(payPanel, BorderLayout.SOUTH);
+		JPanel payButtonPanel = new JPanel(new FlowLayout());
+		payButtonPanel.add(new JLabel("Is VIP?"));
+		payButtonPanel.add(vipCheckBox);
+		payButtonPanel.add(payButton);
+		posPanel.add(payButtonPanel, BorderLayout.SOUTH);
+		
+		
 		
 		payButton.addActionListener(new ActionListener() {
 
@@ -49,18 +54,43 @@ public class POSDialog extends JDialog {
 					setWarningMessage("Invalid sales information");
 					return;
 				}
-				pos.setVisible(false);
-				add(new PayPanel(vipCheckBox.isSelected(), POSDialog.this), BorderLayout.CENTER);
+				posPanel.setVisible(false);
+				payPanel = new PayPanel(vipCheckBox.isSelected(), POSDialog.this);
+				payPanel.add(submitButton, BorderLayout.SOUTH);
+				add(payPanel, BorderLayout.CENTER);
 				infoButton.setText("Please pay the following:");
 				validate();
 			}
-			
+		});
+		
+		submitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if (Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected()) < 0) {
+						setWarningMessage("Not enough money!");
+						return;
+					}
+					String log = "Purchase:\n" + username + " " + vipCheckBox.isSelected() + " " + 
+							Controller.getInstance().getTotalPrice() + " " +
+							Controller.getInstance().getDiscounted(vipCheckBox.isSelected()) + " " +
+							Controller.getInstance().getTotalSum(vipCheckBox.isSelected()) + " " +
+							payPanel.getPaidAmount() + " " + 
+							Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected());
+					for (String itemID : Controller.getInstance().getOrderList().keySet()) {
+						log += itemID + " " + Controller.getInstance().getOrderList().get(itemID) + ", ";
+					}
+					log += "\n\n";
+					Controller.getInstance().addLog(log);
+ 				} catch (NumberFormatException e) {
+					setWarningMessage("Please enter correct amount");
+				}
+			}
 		});
 		
 		setLayout(new BorderLayout());
 		this.add(infoButton, BorderLayout.NORTH);
 		this.add(warningButton, BorderLayout.SOUTH);
-		this.add(pos, BorderLayout.CENTER);
+		this.add(posPanel, BorderLayout.CENTER);
 		this.pack();
 	}
 	
@@ -71,4 +101,5 @@ public class POSDialog extends JDialog {
 	public void clearWarningMessage() {
 		warningButton.setText("");
 	}
+
 }

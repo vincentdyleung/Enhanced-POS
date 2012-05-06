@@ -1,5 +1,8 @@
 package core;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import conf.GlobalConfiguration;
@@ -12,10 +15,18 @@ public class Controller {
 	private HashMap<String, Integer> orderList;
 	private static Controller instance;
 	private DecimalFormat numberFormat;
+	private PrintWriter logger;
 	
 	private Controller() {
 		orderList = new HashMap<String, Integer>();
 		numberFormat = new DecimalFormat("##.0");
+		try {
+			logger = new PrintWriter(new File(GlobalConfiguration.getInstance().getConfPath() + "salesRecord.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Log file not found");
+			System.exit(-1);
+		}
 	}
 	
 	public static Controller getInstance() {
@@ -92,4 +103,8 @@ public class Controller {
 		return paid - getTotalSum(isVIP);
 	}
 	
+	public void addLog(String msg) {
+		logger.append(msg);
+		logger.close();
+	}
 }

@@ -102,4 +102,5 @@ public class LoginDialog extends JDialog {
 		}
 		this.pack();
 	}
+
 }
