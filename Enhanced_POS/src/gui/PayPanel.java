@@ -10,14 +10,18 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import core.Controller;
+import core.entities.Item;
+import core.entities.ItemList;
 
 public class PayPanel extends JPanel {
 	private JTextField totalPrice;
@@ -28,6 +32,7 @@ public class PayPanel extends JPanel {
 	private JButton submitButton;
 	private boolean isVIP;
 	private POSDialog parentDialog;
+	private JList shoppingCartList;
 	
 	public PayPanel(boolean _isVIP, POSDialog _parentDialog) {
 		totalPrice = new JTextField(10);
@@ -90,6 +95,15 @@ public class PayPanel extends JPanel {
 			
 		});
 		
+		DefaultListModel shoppingCartListModel = new DefaultListModel();
+		for (String itemID : Controller.getInstance().getOrderList().keySet()) {
+			Item item = ItemList.getInstance().getItemById(itemID);
+			int amount = Controller.getInstance().getOrderList().get(itemID);
+			float subTotal = item.getPrice() * amount;
+			String cartDisplay = item.getItemName() + " " + amount + " = " + df.format(subTotal);
+			shoppingCartListModel.addElement(cartDisplay);
+		}
+		shoppingCartList = new JList(shoppingCartListModel);
 		JPanel textFieldPanel = new JPanel(new GridLayout(5, 2, 5, 5));
 		textFieldPanel.add(new JLabel("Total Price: HK$"));
 		textFieldPanel.add(totalPrice);
@@ -103,6 +117,7 @@ public class PayPanel extends JPanel {
 		textFieldPanel.add(refund);
 		
 		setLayout(new BorderLayout());
+		add(shoppingCartList, BorderLayout.WEST);
 		add(textFieldPanel, BorderLayout.EAST);
 		add(submitButton, BorderLayout.SOUTH);
 	}

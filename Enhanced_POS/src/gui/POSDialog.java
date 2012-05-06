@@ -51,6 +51,7 @@ public class POSDialog extends JDialog {
 				}
 				pos.setVisible(false);
 				add(new PayPanel(vipCheckBox.isSelected(), POSDialog.this), BorderLayout.CENTER);
+				infoButton.setText("Please pay the following:");
 				validate();
 			}
 			
