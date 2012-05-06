@@ -53,8 +53,12 @@ public class PayPanel extends JPanel {
 		
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (Controller.getInstance().getRefund(Float.valueOf(paid.getText()), isVIP) < 0) {
-					parentDialog.setWarningMessage("Not enough money!");
+				try {
+					if (Controller.getInstance().getRefund(Float.valueOf(paid.getText()), isVIP) < 0) {
+						parentDialog.setWarningMessage("Not enough money!");
+					}
+				} catch (NumberFormatException e) {
+					parentDialog.setWarningMessage("Please enter correct amount");
 				}
 			}
 		});
@@ -73,10 +77,14 @@ public class PayPanel extends JPanel {
 
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
-				float amountTyped = Float.valueOf(paid.getText());
-				float refundAmount = Controller.getInstance().getRefund(amountTyped, isVIP);
-				if (refundAmount >= 0) {
-					refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP)));
+				try {
+					float amountTyped = Float.valueOf(paid.getText());
+					float refundAmount = Controller.getInstance().getRefund(amountTyped, isVIP);
+					if (refundAmount >= 0) {
+						refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP)));
+					}
+				} catch (NumberFormatException ex) {
+					parentDialog.setWarningMessage("Please enter correct amount");
 				}
 			}
 			
