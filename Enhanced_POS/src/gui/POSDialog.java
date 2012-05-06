@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import core.Controller;
 import core.entities.UserList;
 
 public class POSDialog extends JDialog {
@@ -26,13 +27,13 @@ public class POSDialog extends JDialog {
 	public POSDialog(String _username) {
 		infoButton = new JButton();
 		infoButton.setForeground(Color.BLUE);
-		warningButton = new JButton();
-		warningButton.setForeground(Color.RED);
 		payButton = new JButton("Pay");
 		vipCheckBox = new JCheckBox();
-		pos = new POSPanel();
+		pos = new POSPanel(this);
 		username = _username;
 		infoButton.setText("Record sale information succeeded by user " + username);
+		warningButton = new JButton();
+		warningButton.setForeground(Color.RED);
 		
 		JPanel payPanel = new JPanel(new FlowLayout());
 		payPanel.add(new JLabel("Is VIP?"));
@@ -44,8 +45,12 @@ public class POSDialog extends JDialog {
 
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				if (Controller.getInstance().getOrderList().isEmpty()) {
+					setWarningMessage("Invalid sales information");
+					return;
+				}
 				pos.setVisible(false);
-				add(new PayPanel(vipCheckBox.isSelected()), BorderLayout.CENTER);
+				add(new PayPanel(vipCheckBox.isSelected(), POSDialog.this), BorderLayout.CENTER);
 				validate();
 			}
 			
@@ -53,9 +58,16 @@ public class POSDialog extends JDialog {
 		
 		setLayout(new BorderLayout());
 		this.add(infoButton, BorderLayout.NORTH);
-		this.add(pos, BorderLayout.CENTER);
 		this.add(warningButton, BorderLayout.SOUTH);
+		this.add(pos, BorderLayout.CENTER);
 		this.pack();
 	}
 	
+	public void setWarningMessage(String msg) {
+		warningButton.setText(msg);
+	}
+	
+	public void clearWarningMessage() {
+		warningButton.setText("");
+	}
 }

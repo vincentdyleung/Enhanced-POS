@@ -7,10 +7,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -21,23 +23,28 @@ public class PayPanel extends JPanel {
 	private JTextField totalPrice;
 	private JTextField discounted;
 	private JTextField totalSum;
-	private JTextField paid;
+	private JFormattedTextField paid;
 	private JTextField refund;
 	private JButton submitButton;
 	private boolean isVIP;
+	private POSDialog parentDialog;
 	
-	public PayPanel(boolean _isVIP) {
+	public PayPanel(boolean _isVIP, POSDialog _parentDialog) {
 		totalPrice = new JTextField(10);
 		totalPrice.setEnabled(false);
 		discounted = new JTextField(10);
 		discounted.setEnabled(false);
 		totalSum = new JTextField(10);
 		totalSum.setEnabled(false);
-		paid = new JTextField(10);
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setGroupingUsed(false);
+		paid = new JFormattedTextField(nf);
+		paid.setText("0.0");
 		refund = new JTextField("-");
 		refund.setEnabled(false);
 		submitButton = new JButton("Submit");
 		isVIP = _isVIP;
+		parentDialog = _parentDialog;
 		
 		final DecimalFormat df = Controller.getInstance().getNumberFormat();
 		totalPrice.setText(df.format(Controller.getInstance().getTotalPrice()));
@@ -46,7 +53,9 @@ public class PayPanel extends JPanel {
 		
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				if (Controller.getInstance().getRefund(Float.valueOf(paid.getText()), isVIP) < 0) {
+					parentDialog.setWarningMessage("Not enough money!");
+				}
 			}
 		});
 		
@@ -65,7 +74,10 @@ public class PayPanel extends JPanel {
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
 				float amountTyped = Float.valueOf(paid.getText());
-				refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP)));
+				float refundAmount = Controller.getInstance().getRefund(amountTyped, isVIP);
+				if (refundAmount >= 0) {
+					refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP)));
+				}
 			}
 			
 		});

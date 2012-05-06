@@ -33,6 +33,10 @@ public class Controller {
 		orderList.remove(item.getItemID());
 	}
 	
+	public void clearCart() {
+		orderList.clear();
+	}
+	
 	public HashMap<String, Integer> getOrderList() {
 		return orderList;
 	}
@@ -87,4 +91,5 @@ public class Controller {
 	public float getRefund(float paid, boolean isVIP) {
 		return paid - getTotalSum(isVIP);
 	}
+	
 }
