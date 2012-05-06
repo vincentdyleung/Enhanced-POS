@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
@@ -37,7 +39,7 @@ public class PayPanel extends JPanel {
 		submitButton = new JButton("Submit");
 		isVIP = _isVIP;
 		
-		DecimalFormat df = Controller.getInstance().getNumberFormat();
+		final DecimalFormat df = Controller.getInstance().getNumberFormat();
 		totalPrice.setText(df.format(Controller.getInstance().getTotalPrice()));
 		totalSum.setText(df.format(Controller.getInstance().getTotalSum(isVIP)));
 		discounted.setText(df.format(Controller.getInstance().getDiscounted(isVIP)));
@@ -46,6 +48,26 @@ public class PayPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				
 			}
+		});
+		
+		paid.addKeyListener(new KeyListener() {
+
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				float amountTyped = Float.valueOf(paid.getText());
+				refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP)));
+			}
+			
 		});
 		
 		JPanel textFieldPanel = new JPanel(new GridLayout(5, 2, 5, 5));
@@ -64,4 +86,5 @@ public class PayPanel extends JPanel {
 		add(textFieldPanel, BorderLayout.EAST);
 		add(submitButton, BorderLayout.SOUTH);
 	}
+
 }

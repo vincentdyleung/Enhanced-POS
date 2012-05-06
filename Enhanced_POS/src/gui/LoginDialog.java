@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +26,8 @@ public class LoginDialog extends JDialog {
 	private JPasswordField passwordInput;
 	private JButton signinButton;
 	private JButton closeButton;
+	private JButton infoButton;
+	private JButton warningButton;
 	private UserList users;
 	
 	public LoginDialog() {
@@ -31,6 +35,10 @@ public class LoginDialog extends JDialog {
 		passwordInput = new JPasswordField();
 		signinButton = new JButton("Sign In");
 		closeButton = new JButton("Close");
+		infoButton = new JButton();
+		infoButton.setForeground(Color.BLUE);
+		warningButton = new JButton();
+		warningButton.setForeground(Color.RED);
 		users = UserList.getInstance();
 		
 		JLabel usernameLabel = new JLabel("Username:");
@@ -61,22 +69,37 @@ public class LoginDialog extends JDialog {
 				String username = usernameInput.getText();
 				String password = passwordInput.getText();
 				if (username.equals("") || password.equals("")) {
-					JOptionPane.showConfirmDialog(null, "Both Username and Password are required", "Error", JOptionPane.OK_OPTION);
+					warningButton.setText("Invalid username or password");
+					pack();
 				} else {
 					if (users.verifyUser(username, password)) {
 						dispose();
-						POSDialog pos = new POSDialog();
+						POSDialog pos = new POSDialog(username);
 						pos.setLocationRelativeTo(LoginDialog.this);
 						pos.setVisible(true);
+					} else {
+						warningButton.setText("Invalid username or password");
+						pack();
 					}
 				}
 			}
 			
 		});
-		this.setLayout(new GridLayout(3, 1, 0, 0));
-		this.add(usernamePanel);
-		this.add(passwordPanel);
-		this.add(buttonPanel);
+		
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new GridLayout(3, 1, 10, 10));
+		mainPanel.add(usernamePanel);
+		mainPanel.add(passwordPanel);
+		mainPanel.add(buttonPanel);
+		setLayout(new BorderLayout(10, 10));
+		add(mainPanel, BorderLayout.CENTER);
+		add(warningButton, BorderLayout.SOUTH);
+		add(infoButton, BorderLayout.NORTH);
+		if (UserList.getInstance().isInitialized()) {
+			infoButton.setText("Connection succeeded, please sign in!");
+		} else {
+			warningButton.setText("Connection failed");
+		}
 		this.pack();
 	}
 }

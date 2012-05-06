@@ -3,6 +3,7 @@ package core;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import conf.GlobalConfiguration;
+import conf.discount.Discount;
 
 import core.entities.Item;
 import core.entities.ItemList;
@@ -54,9 +55,16 @@ public class Controller {
 		float total = 0f;
 		for (String itemID : orderList.keySet()) {
 			Item item = ItemList.getInstance().getItemById(itemID);
-			float subTotal = item.getPrice() * orderList.get(itemID) * (1 - item.getDiscount().discount());
+			Discount productDiscount = item.getDiscount();
+			float subTotal;
 			System.out.println(item); 
-			System.out.println(item.getDiscount().discountMessage());
+			if (productDiscount != null) {
+				subTotal = item.getPrice() * orderList.get(itemID) * (1 - productDiscount.discount());
+				System.out.println(item.getDiscount().discountMessage());
+			} else {
+				subTotal = item.getPrice();
+				System.out.println("No product discount");
+			}	
 			total += subTotal;
 		}
 		if (getTotalPrice() > GlobalConfiguration.getInstance().getSalesRequirement()) {
@@ -74,5 +82,9 @@ public class Controller {
 	
 	public float getDiscounted(boolean isVIP) {
 		return getTotalPrice() - getTotalSum(isVIP);
+	}
+	
+	public float getRefund(float paid, boolean isVIP) {
+		return paid - getTotalSum(isVIP);
 	}
 }

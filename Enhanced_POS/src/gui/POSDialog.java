@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import core.entities.UserList;
+
 public class POSDialog extends JDialog {
 
 	private JButton infoButton;
@@ -18,13 +21,18 @@ public class POSDialog extends JDialog {
 	private POSPanel pos;
 	private JButton payButton;
 	private JCheckBox vipCheckBox;
+	private String username;
 	
-	public POSDialog() {
+	public POSDialog(String _username) {
 		infoButton = new JButton();
+		infoButton.setForeground(Color.BLUE);
 		warningButton = new JButton();
+		warningButton.setForeground(Color.RED);
 		payButton = new JButton("Pay");
 		vipCheckBox = new JCheckBox();
 		pos = new POSPanel();
+		username = _username;
+		infoButton.setText("Record sale information succeeded by user " + username);
 		
 		JPanel payPanel = new JPanel(new FlowLayout());
 		payPanel.add(new JLabel("Is VIP?"));
