@@ -17,7 +17,7 @@ public class Controller {
 	private DecimalFormat numberFormat;
 	private PrintWriter logger;
 	
-	private Controller() {
+	public Controller() {
 		orderList = new HashMap<String, Integer>();
 		numberFormat = new DecimalFormat("##.0");
 		try {
@@ -27,13 +27,6 @@ public class Controller {
 			System.err.println("Log file not found");
 			System.exit(-1);
 		}
-	}
-	
-	public static Controller getInstance() {
-		if (instance == null) {
-			instance = new Controller();
-		}
-		return instance;
 	}
 	
 	public void addToCart(Item item, int amount) throws OutOfStockException {

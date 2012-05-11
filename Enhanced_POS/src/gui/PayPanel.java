@@ -19,7 +19,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import core.Controller;
 import core.entities.Item;
 import core.entities.ItemList;
 
@@ -50,10 +49,10 @@ public class PayPanel extends JPanel {
 		isVIP = _isVIP;
 		parentDialog = _parentDialog;
 		
-		final DecimalFormat df = Controller.getInstance().getNumberFormat();
-		totalPrice.setText(df.format(Controller.getInstance().getTotalPrice()));
-		totalSum.setText(df.format(Controller.getInstance().getTotalSum(isVIP, isEventDiscount)));
-		discounted.setText(df.format(Controller.getInstance().getDiscounted(isVIP, isEventDiscount)));
+		final DecimalFormat df = parentDialog.getController().getNumberFormat();
+		totalPrice.setText(df.format(parentDialog.getController().getTotalPrice()));
+		totalSum.setText(df.format(parentDialog.getController().getTotalSum(isVIP, isEventDiscount)));
+		discounted.setText(df.format(parentDialog.getController().getDiscounted(isVIP, isEventDiscount)));
 		
 		paid.addKeyListener(new KeyListener() {
 
@@ -71,9 +70,9 @@ public class PayPanel extends JPanel {
 				// TODO Auto-generated method stub
 				try {
 					float amountTyped = Float.valueOf(paid.getText());
-					float refundAmount = Controller.getInstance().getRefund(amountTyped, isVIP, isEventDiscount);
+					float refundAmount = parentDialog.getController().getRefund(amountTyped, isVIP, isEventDiscount);
 					if (refundAmount >= 0) {
-						refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP, isEventDiscount)));
+						refund.setText(df.format(parentDialog.getController().getRefund(amountTyped, isVIP, isEventDiscount)));
 					} else {
 						refund.setText("");
 					}
@@ -86,9 +85,9 @@ public class PayPanel extends JPanel {
 		});
 		
 		DefaultListModel shoppingCartListModel = new DefaultListModel();
-		for (String itemID : Controller.getInstance().getOrderList().keySet()) {
+		for (String itemID : parentDialog.getController().getOrderList().keySet()) {
 			Item item = ItemList.getInstance().getItemById(itemID);
-			int amount = Controller.getInstance().getOrderList().get(itemID);
+			int amount = parentDialog.getController().getOrderList().get(itemID);
 			float subTotal = item.getPrice() * amount;
 			String cartDisplay = item.getItemName() + " " + amount + " = " + df.format(subTotal);
 			shoppingCartListModel.addElement(cartDisplay);

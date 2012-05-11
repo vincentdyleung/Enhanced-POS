@@ -122,7 +122,7 @@ public class POSPanel extends JPanel {
 		
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Controller.getInstance().clearCart();
+				parentDialog.getController().clearCart();
 				updateShoppingCartList();
 			}
 		});
@@ -156,20 +156,20 @@ public class POSPanel extends JPanel {
 	}
 	
 	private void addToCart(Item item, int amount) throws OutOfStockException {
-		Controller.getInstance().addToCart(item, amount);
+		parentDialog.getController().addToCart(item, amount);
 		updateShoppingCartList();
 	}
 	
 	private void removeFromCart(String itemName) {
 		Item selectedItem = ItemList.getInstance().getItemByName(itemName);
-		Controller.getInstance().removeFromCart(selectedItem);
+		parentDialog.getController().removeFromCart(selectedItem);
 		updateShoppingCartList();
 	}
 	
 	private void updateShoppingCartList() {
 		shoppingCartListModel.clear();
-		DecimalFormat df = Controller.getInstance().getNumberFormat();
-		Iterator<Entry<String, Integer>> it = Controller.getInstance().getOrderList().entrySet().iterator();
+		DecimalFormat df = parentDialog.getController().getNumberFormat();
+		Iterator<Entry<String, Integer>> it = parentDialog.getController().getOrderList().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, Integer> pairs = it.next();
 			Item i = ItemList.getInstance().getItemById(pairs.getKey());

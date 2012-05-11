@@ -26,6 +26,7 @@ public class POSDialog extends JDialog{
 	private JCheckBox vipCheckBox;
 	private JCheckBox eventDiscountCheckBox;
 	private String username;
+	private Controller controller;
 	
 	public POSDialog(String _username) {
 		infoButton = new JButton();
@@ -39,6 +40,8 @@ public class POSDialog extends JDialog{
 		warningButton.setForeground(Color.RED);
 		submitButton = new JButton("Submit");
 		eventDiscountCheckBox = new JCheckBox();
+		controller = new Controller();
+		System.out.println(controller);
 		
 		JPanel payButtonPanel = new JPanel(new FlowLayout());
 		payButtonPanel.add(new JLabel("Is VIP?"));
@@ -54,7 +57,7 @@ public class POSDialog extends JDialog{
 
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if (Controller.getInstance().getOrderList().isEmpty()) {
+				if (controller.getOrderList().isEmpty()) {
 					setWarningMessage("Invalid sales information");
 					return;
 				}
@@ -70,21 +73,21 @@ public class POSDialog extends JDialog{
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					if (Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) < 0) {
+					if (controller.getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) < 0) {
 						setWarningMessage("Not enough money!");
 						return;
 					}
 					String log = "Purchase:\n" + username + " " + vipCheckBox.isSelected() + " " + 
-							Controller.getInstance().getTotalPrice() + " " +
-							Controller.getInstance().getDiscounted(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
-							Controller.getInstance().getTotalSum(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
+							controller.getTotalPrice() + " " +
+							controller.getDiscounted(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
+							controller.getTotalSum(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
 							payPanel.getPaidAmount() + " " + 
-							Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected());
-					for (String itemID : Controller.getInstance().getOrderList().keySet()) {
-						log += itemID + " " + Controller.getInstance().getOrderList().get(itemID) + ", ";
+							controller.getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected());
+					for (String itemID : controller.getOrderList().keySet()) {
+						log += itemID + " " + controller.getOrderList().get(itemID) + ", ";
 					}
 					log += "\n\n";
-					Controller.getInstance().addLog(log);
+					controller.addLog(log);
  				} catch (NumberFormatException e) {
 					setWarningMessage("Please enter correct amount");
 				}
@@ -104,6 +107,10 @@ public class POSDialog extends JDialog{
 	
 	public void clearWarningMessage() {
 		warningButton.setText("");
+	}
+	
+	public Controller getController() {
+		return controller;
 	}
 
 }
