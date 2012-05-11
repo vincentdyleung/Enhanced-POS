@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import core.Controller;
+import core.OutOfStockException;
 import core.entities.Item;
 import core.entities.ItemList;
 
@@ -105,6 +106,9 @@ public class POSPanel extends JPanel {
 					parentDialog.clearWarningMessage();
 				} catch (NumberFormatException e) {
 					parentDialog.setWarningMessage("Please input correct amount");
+				} catch (OutOfStockException e) {
+					// TODO Auto-generated catch block
+					parentDialog.setWarningMessage("Stock not enough");
 				}
 			}
 		});
@@ -137,6 +141,9 @@ public class POSPanel extends JPanel {
 					parentDialog.setWarningMessage("Please input valid product ID and amount");
 				} catch (NullPointerException e) {
 					parentDialog.setWarningMessage("Product " + idInput.getText() + " does not exist");
+				} catch (OutOfStockException e) {
+					// TODO Auto-generated catch block
+					parentDialog.setWarningMessage("Stock not enough!");
 				}
 			}
 		});
@@ -148,7 +155,7 @@ public class POSPanel extends JPanel {
 		add(shoppingCartPane, BorderLayout.EAST);
 	}
 	
-	private void addToCart(Item item, int amount) {
+	private void addToCart(Item item, int amount) throws OutOfStockException {
 		Controller.getInstance().addToCart(item, amount);
 		updateShoppingCartList();
 	}

@@ -30,10 +30,11 @@ public class PayPanel extends JPanel {
 	private JFormattedTextField paid;
 	private JTextField refund;
 	private boolean isVIP;
+	private boolean isEventDiscount;
 	private POSDialog parentDialog;
 	private JList shoppingCartList;
 	
-	public PayPanel(boolean _isVIP, POSDialog _parentDialog) {
+	public PayPanel(boolean _isVIP, boolean _isEventDiscount, POSDialog _parentDialog) {
 		totalPrice = new JTextField(10);
 		totalPrice.setEnabled(false);
 		discounted = new JTextField(10);
@@ -51,8 +52,8 @@ public class PayPanel extends JPanel {
 		
 		final DecimalFormat df = Controller.getInstance().getNumberFormat();
 		totalPrice.setText(df.format(Controller.getInstance().getTotalPrice()));
-		totalSum.setText(df.format(Controller.getInstance().getTotalSum(isVIP)));
-		discounted.setText(df.format(Controller.getInstance().getDiscounted(isVIP)));
+		totalSum.setText(df.format(Controller.getInstance().getTotalSum(isVIP, isEventDiscount)));
+		discounted.setText(df.format(Controller.getInstance().getDiscounted(isVIP, isEventDiscount)));
 		
 		paid.addKeyListener(new KeyListener() {
 
@@ -70,9 +71,9 @@ public class PayPanel extends JPanel {
 				// TODO Auto-generated method stub
 				try {
 					float amountTyped = Float.valueOf(paid.getText());
-					float refundAmount = Controller.getInstance().getRefund(amountTyped, isVIP);
+					float refundAmount = Controller.getInstance().getRefund(amountTyped, isVIP, isEventDiscount);
 					if (refundAmount >= 0) {
-						refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP)));
+						refund.setText(df.format(Controller.getInstance().getRefund(amountTyped, isVIP, isEventDiscount)));
 					} else {
 						refund.setText("");
 					}

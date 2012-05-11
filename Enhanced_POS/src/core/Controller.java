@@ -36,8 +36,13 @@ public class Controller {
 		return instance;
 	}
 	
-	public void addToCart(Item item, int amount) {
-		orderList.put(item.getItemID(), amount);
+	public void addToCart(Item item, int amount) throws OutOfStockException {
+		if (amount > item.getNumber()) {
+			throw new OutOfStockException();
+		} else {
+			orderList.put(item.getItemID(), amount);
+			return;
+		}
 	}
 	
 	public void removeFromCart(Item item) {
@@ -66,7 +71,7 @@ public class Controller {
 		return total;
 	}
 	
-	public float getTotalSum(boolean isVIP) {
+	public float getTotalSum(boolean isVIP, boolean isEventDiscount) {
 		float total = 0f;
 		for (String itemID : orderList.keySet()) {
 			Item item = ItemList.getInstance().getItemById(itemID);
@@ -75,7 +80,7 @@ public class Controller {
 			System.out.println(item); 
 			if (productDiscount != null) {
 				subTotal = item.getPrice() * orderList.get(itemID) * (1 - productDiscount.discount());
-				System.out.println(item.getDiscount().discountMessage());
+				System.out.println(productDiscount.discountMessage() + productDiscount.discount());
 			} else {
 				subTotal = item.getPrice();
 				System.out.println("No product discount");
@@ -90,17 +95,19 @@ public class Controller {
 			total *= (1 - GlobalConfiguration.getInstance().getCustomerDiscount().discount());
 			System.out.println(GlobalConfiguration.getInstance().getCustomerDiscount().discountMessage());
 		}
-		total *= (1 - GlobalConfiguration.getInstance().getGlobalDiscount().discount());
-		System.out.println(GlobalConfiguration.getInstance().getGlobalDiscount().discountMessage());
+		if (isEventDiscount) {
+			total *= (1 - GlobalConfiguration.getInstance().getGlobalDiscount().discount());
+			System.out.println(GlobalConfiguration.getInstance().getGlobalDiscount().discountMessage());
+		}
 		return total;
 	}
 	
-	public float getDiscounted(boolean isVIP) {
-		return getTotalPrice() - getTotalSum(isVIP);
+	public float getDiscounted(boolean isVIP, boolean isEventDiscount) {
+		return getTotalPrice() - getTotalSum(isVIP, isEventDiscount);
 	}
 	
-	public float getRefund(float paid, boolean isVIP) {
-		return paid - getTotalSum(isVIP);
+	public float getRefund(float paid, boolean isVIP, boolean isEventDiscount) {
+		return paid - getTotalSum(isVIP, isEventDiscount);
 	}
 	
 	public void addLog(String msg) {

@@ -24,6 +24,7 @@ public class POSDialog extends JDialog{
 	private JButton payButton;
 	private JButton submitButton;
 	private JCheckBox vipCheckBox;
+	private JCheckBox eventDiscountCheckBox;
 	private String username;
 	
 	public POSDialog(String _username) {
@@ -37,10 +38,13 @@ public class POSDialog extends JDialog{
 		warningButton = new JButton();
 		warningButton.setForeground(Color.RED);
 		submitButton = new JButton("Submit");
+		eventDiscountCheckBox = new JCheckBox();
 		
 		JPanel payButtonPanel = new JPanel(new FlowLayout());
 		payButtonPanel.add(new JLabel("Is VIP?"));
 		payButtonPanel.add(vipCheckBox);
+		payButtonPanel.add(new JLabel("Apply Event Discount?"));
+		payButtonPanel.add(eventDiscountCheckBox);
 		payButtonPanel.add(payButton);
 		posPanel.add(payButtonPanel, BorderLayout.SOUTH);
 		
@@ -55,7 +59,7 @@ public class POSDialog extends JDialog{
 					return;
 				}
 				posPanel.setVisible(false);
-				payPanel = new PayPanel(vipCheckBox.isSelected(), POSDialog.this);
+				payPanel = new PayPanel(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected(), POSDialog.this);
 				payPanel.add(submitButton, BorderLayout.SOUTH);
 				add(payPanel, BorderLayout.CENTER);
 				infoButton.setText("Please pay the following:");
@@ -66,16 +70,16 @@ public class POSDialog extends JDialog{
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					if (Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected()) < 0) {
+					if (Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) < 0) {
 						setWarningMessage("Not enough money!");
 						return;
 					}
 					String log = "Purchase:\n" + username + " " + vipCheckBox.isSelected() + " " + 
 							Controller.getInstance().getTotalPrice() + " " +
-							Controller.getInstance().getDiscounted(vipCheckBox.isSelected()) + " " +
-							Controller.getInstance().getTotalSum(vipCheckBox.isSelected()) + " " +
+							Controller.getInstance().getDiscounted(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
+							Controller.getInstance().getTotalSum(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
 							payPanel.getPaidAmount() + " " + 
-							Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected());
+							Controller.getInstance().getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected());
 					for (String itemID : Controller.getInstance().getOrderList().keySet()) {
 						log += itemID + " " + Controller.getInstance().getOrderList().get(itemID) + ", ";
 					}
