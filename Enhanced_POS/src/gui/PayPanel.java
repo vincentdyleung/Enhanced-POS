@@ -47,6 +47,7 @@ public class PayPanel extends JPanel {
 		refund = new JTextField("-");
 		refund.setEnabled(false);
 		isVIP = _isVIP;
+		isEventDiscount = _isEventDiscount;
 		parentDialog = _parentDialog;
 		
 		final DecimalFormat df = parentDialog.getController().getNumberFormat();

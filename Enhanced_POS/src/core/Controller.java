@@ -75,7 +75,7 @@ public class Controller {
 				subTotal = item.getPrice() * orderList.get(itemID) * (1 - productDiscount.discount());
 				System.out.println(productDiscount.discountMessage() + productDiscount.discount());
 			} else {
-				subTotal = item.getPrice();
+				subTotal = item.getPrice() * orderList.get(itemID);
 				System.out.println("No product discount");
 			}	
 			total += subTotal;
