@@ -48,3 +48,38 @@ zhulin false 187.2 44.92801 180.0 37.728012
 ID006 12, ID004 12, 
 
 
+Purchase:
+zhulin false 11766.0 3102.2285 9000.0 336.22852
+ID005 222, ID010 222, 
+
+
+Purchase:
+chunlin true 67.2 6.720001 90.0 29.520004
+ID006 12, 
+
+
+Purchase:
+zhulin false 396.0 95.04001 400.0 99.04001
+ID005 12, 
+
+
+Purchase:
+chunlin false 396.0 95.04001 900.0 599.04004
+ID005 12, 
+
+
+Purchase:
+chunlin false 396.0 110.08801 900.0 614.088
+ID005 12, 
+
+
+Purchase:
+chunlin false 396.0 110.08801 900.0 614.088
+ID005 12, 
+
+
+Purchase:
+chunlin true 38.4 5.568001 80.0 47.168
+ID003 12, ID001 12, 
+
+

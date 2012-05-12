@@ -23,10 +23,12 @@ public class POSDialog extends JDialog{
 	private PayPanel payPanel;
 	private JButton payButton;
 	private JButton submitButton;
+	private JButton backButton;
 	private JCheckBox vipCheckBox;
 	private JCheckBox eventDiscountCheckBox;
 	private String username;
 	private Controller controller;
+	private JPanel payButtonPanel;
 	
 	public POSDialog(String _username) {
 		infoButton = new JButton();
@@ -39,19 +41,17 @@ public class POSDialog extends JDialog{
 		warningButton = new JButton();
 		warningButton.setForeground(Color.RED);
 		submitButton = new JButton("Submit");
+		backButton = new JButton("Back");
 		eventDiscountCheckBox = new JCheckBox();
 		controller = new Controller();
-		System.out.println(controller);
 		
-		JPanel payButtonPanel = new JPanel(new FlowLayout());
+		payButtonPanel = new JPanel(new FlowLayout());
 		payButtonPanel.add(new JLabel("Is VIP?"));
 		payButtonPanel.add(vipCheckBox);
 		payButtonPanel.add(new JLabel("Apply Event Discount?"));
 		payButtonPanel.add(eventDiscountCheckBox);
 		payButtonPanel.add(payButton);
 		posPanel.add(payButtonPanel, BorderLayout.SOUTH);
-		
-		
 		
 		payButton.addActionListener(new ActionListener() {
 
@@ -61,9 +61,12 @@ public class POSDialog extends JDialog{
 					setWarningMessage("Invalid sales information");
 					return;
 				}
-				posPanel.setVisible(false);
+				remove(posPanel);
 				payPanel = new PayPanel(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected(), POSDialog.this);
-				payPanel.add(submitButton, BorderLayout.SOUTH);
+				JPanel submitPanel = new JPanel(new FlowLayout());
+				submitPanel.add(submitButton);
+				submitPanel.add(backButton);
+				payPanel.add(submitPanel, BorderLayout.SOUTH);
 				add(payPanel, BorderLayout.CENTER);
 				infoButton.setText("Please pay the following:");
 				validate();
@@ -87,14 +90,25 @@ public class POSDialog extends JDialog{
 					}
 					log += "\n\n";
 					controller.addLog(log);
-					remove(payPanel);
 					controller.clearCart();
+					posPanel = new POSPanel(POSDialog.this);
+					vipCheckBox.setSelected(false);
+					eventDiscountCheckBox.setSelected(false);
+					posPanel.add(payButtonPanel, BorderLayout.SOUTH);
+					remove(payPanel);
+					add(posPanel, BorderLayout.CENTER);
 					infoButton.setText("Record sale information succeeded by user " + username);
 					clearWarningMessage();
-					posPanel.setVisible(true);
  				} catch (NumberFormatException e) {
 					setWarningMessage("Please enter correct amount");
 				}
+			}
+		});
+		
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				payPanel.setVisible(false);
+				add(posPanel, BorderLayout.CENTER);
 			}
 		});
 		

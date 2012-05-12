@@ -166,7 +166,7 @@ public class POSPanel extends JPanel {
 		updateShoppingCartList();
 	}
 	
-	private void updateShoppingCartList() {
+	public void updateShoppingCartList() {
 		shoppingCartListModel.clear();
 		DecimalFormat df = parentDialog.getController().getNumberFormat();
 		Iterator<Entry<String, Integer>> it = parentDialog.getController().getOrderList().entrySet().iterator();

@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import conf.GlobalConfiguration;
 import core.entities.UserList;
@@ -91,6 +92,7 @@ public class LoginDialog extends JDialog {
 		mainPanel.add(usernamePanel);
 		mainPanel.add(passwordPanel);
 		mainPanel.add(buttonPanel);
+		mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout(10, 10));
 		add(mainPanel, BorderLayout.CENTER);
 		add(warningButton, BorderLayout.SOUTH);

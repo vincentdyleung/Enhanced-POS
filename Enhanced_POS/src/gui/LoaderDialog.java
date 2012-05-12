@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 public class LoaderDialog extends JDialog {
 	private JButton startButton;
@@ -18,6 +19,7 @@ public class LoaderDialog extends JDialog {
 		startButton = new JButton("Start");
 		JLabel startButtonLabel = new JLabel("Start a new POS");
 		JPanel panel = new JPanel(new GridLayout(2, 1, 10, 10));
+		panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 		
 		startButton.addActionListener(new ActionListener() {
 
