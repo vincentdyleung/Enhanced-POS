@@ -70,6 +70,7 @@ public class POSDialog extends JDialog{
 				add(payPanel, BorderLayout.CENTER);
 				infoButton.setText("Please pay the following:");
 				validate();
+				pack();
 			}
 		});
 		
@@ -99,6 +100,7 @@ public class POSDialog extends JDialog{
 					add(posPanel, BorderLayout.CENTER);
 					infoButton.setText("Record sale information succeeded by user " + username);
 					clearWarningMessage();
+					pack();
  				} catch (NumberFormatException e) {
 					setWarningMessage("Please enter correct amount");
 				}
@@ -108,7 +110,10 @@ public class POSDialog extends JDialog{
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				payPanel.setVisible(false);
+				infoButton.setText("Record sale information succeeded by user " + username);
+				clearWarningMessage();
 				add(posPanel, BorderLayout.CENTER);
+				pack();
 			}
 		});
 		

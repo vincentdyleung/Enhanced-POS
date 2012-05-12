@@ -18,6 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import conf.GlobalConfiguration;
 
 import core.entities.Item;
 import core.entities.ItemList;
@@ -96,18 +99,20 @@ public class PayPanel extends JPanel {
 		
 		shoppingCartList = new JList(shoppingCartListModel);
 		JPanel textFieldPanel = new JPanel(new GridLayout(5, 2, 5, 5));
-		textFieldPanel.add(new JLabel("Total Price: HK$"));
+		String currency = GlobalConfiguration.getInstance().getCurrency().show();
+		textFieldPanel.add(new JLabel("Total Price: " + currency));
 		textFieldPanel.add(totalPrice);
-		textFieldPanel.add(new JLabel("Discounted: Hk$"));
+		textFieldPanel.add(new JLabel("Discounted: " + currency));
 		textFieldPanel.add(discounted);
-		textFieldPanel.add(new JLabel("Total Sum: HK$"));
+		textFieldPanel.add(new JLabel("Total Sum: " + currency));
 		textFieldPanel.add(totalSum);
-		textFieldPanel.add(new JLabel("Paid: HK$"));
+		textFieldPanel.add(new JLabel("Paid: " + currency));
 		textFieldPanel.add(paid);
-		textFieldPanel.add(new JLabel("Refund: HK$"));
+		textFieldPanel.add(new JLabel("Refund: " + currency));
 		textFieldPanel.add(refund);
 		
-		setLayout(new BorderLayout());
+		setBorder(new EmptyBorder(0, 5, 5, 0));
+		setLayout(new BorderLayout(20, 5));
 		add(shoppingCartList, BorderLayout.WEST);
 		add(textFieldPanel, BorderLayout.EAST);
 	}

@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 
 import core.Controller;
 import core.OutOfStockException;
@@ -46,9 +48,9 @@ public class POSPanel extends JPanel {
 	public POSPanel(POSDialog parent) {
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setGroupingUsed(false);
-		idInput = new JTextField(20);
+		idInput = new JTextField(8);
 		amountIDInput = new JFormattedTextField(nf);
-		amountIDInput.setColumns(10);
+		amountIDInput.setColumns(8);
 		amountClickInput = new JFormattedTextField(nf);
 		addButton = new JButton("Add");
 		toRightButton = new JButton("-->");
@@ -59,6 +61,7 @@ public class POSPanel extends JPanel {
 		JLabel idLabel = new JLabel("ID:");
 		JLabel amountLabel = new JLabel("Amount:");
 		JPanel idInputPanel = new JPanel();
+		idInputPanel.setBorder(new EmptyBorder(0, 5, 5, 0));
 		idInputPanel.add(idLabel);
 		idInputPanel.add(idInput);
 		idInputPanel.add(amountLabel);
@@ -72,23 +75,32 @@ public class POSPanel extends JPanel {
 			Map.Entry<String, Item> pairs = (Map.Entry<String, Item>) it.next();
 			productListModel.addElement(pairs.getValue().getItemName());
 		}
-		productList = new JList(productListModel);
+		productList = new JList(productListModel) {
+			@Override
+			public Dimension getPreferredScrollableViewportSize() {
+				return new Dimension (200, 300);
+			}
+		};
 		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		productList.setVisibleRowCount(20);
-		JScrollPane selectPane = new JScrollPane(productList);
+		JScrollPane selectionPane = new JScrollPane(productList);
 		
 		JPanel selectButtonsPanel = new JPanel();
 		selectButtonsPanel.setLayout(new GridLayout(5, 1, 5, 5));
-		selectButtonsPanel.add(amountLabel);
+		selectButtonsPanel.add(new JLabel("Amount:"));
 		selectButtonsPanel.add(amountClickInput);
 		selectButtonsPanel.add(toRightButton);
 		selectButtonsPanel.add(toLeftButton);
 		selectButtonsPanel.add(clearButton);
 		
 		shoppingCartListModel = new DefaultListModel();
-		shoppingCartList = new JList(shoppingCartListModel);
+		shoppingCartList = new JList(shoppingCartListModel) {
+			@Override
+			public Dimension getPreferredScrollableViewportSize() {
+				return new Dimension(200, 300);
+			}
+		};
 		JScrollPane shoppingCartPane = new JScrollPane(shoppingCartList);
-		
 		
 		toRightButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -115,6 +127,10 @@ public class POSPanel extends JPanel {
 		
 		toLeftButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if (shoppingCartList.isSelectionEmpty()) {
+					parentDialog.setWarningMessage("Please select in the shopping cart!");
+					return;
+				}
 				String selectedItemName = ((String) shoppingCartList.getSelectedValue()).split(" ")[0];
 				removeFromCart(selectedItemName);
 			}
@@ -148,9 +164,10 @@ public class POSPanel extends JPanel {
 			}
 		});
 
-		setLayout(new BorderLayout());
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(new BorderLayout(20, 5));
 		add(idInputPanel, BorderLayout.NORTH);
-		add(selectPane, BorderLayout.WEST);
+		add(selectionPane, BorderLayout.WEST);
 		add(selectButtonsPanel, BorderLayout.CENTER);
 		add(shoppingCartPane, BorderLayout.EAST);
 	}

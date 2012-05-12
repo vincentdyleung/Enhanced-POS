@@ -83,3 +83,18 @@ chunlin true 38.4 5.568001 80.0 47.168
 ID003 12, ID001 12, 
 
 
+Purchase:
+chunlin false 396.0 95.04001 900.0 599.04004
+ID005 12, 
+
+
+Purchase:
+chunlin false 792.0 158.39996 700.0 66.39996
+ID008 12, 
+
+
+Purchase:
+chunlin true 968.0 330.71716 903.0 265.71716
+ID005 22, ID004 22, ID001 22, 
+
+
