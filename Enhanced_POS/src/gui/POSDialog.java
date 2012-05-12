@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import core.Controller;
-import core.entities.UserList;
 
 /**
  * POS Dialog to be shown when Start button is clicked in Loader Dialog
