@@ -80,14 +80,18 @@ public class POSDialog extends JDialog{
 					String log = "Purchase:\n" + username + " " + vipCheckBox.isSelected() + " " + 
 							controller.getTotalPrice() + " " +
 							controller.getDiscounted(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
-							controller.getTotalSum(vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + " " +
 							payPanel.getPaidAmount() + " " + 
-							controller.getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected());
+							controller.getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) + "\n";
 					for (String itemID : controller.getOrderList().keySet()) {
 						log += itemID + " " + controller.getOrderList().get(itemID) + ", ";
 					}
 					log += "\n\n";
 					controller.addLog(log);
+					remove(payPanel);
+					controller.clearCart();
+					infoButton.setText("Record sale information succeeded by user " + username);
+					clearWarningMessage();
+					posPanel.setVisible(true);
  				} catch (NumberFormatException e) {
 					setWarningMessage("Please enter correct amount");
 				}

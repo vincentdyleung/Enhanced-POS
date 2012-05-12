@@ -13,20 +13,11 @@ import core.entities.ItemList;
 
 public class Controller {
 	private HashMap<String, Integer> orderList;
-	private static Controller instance;
 	private DecimalFormat numberFormat;
-	private PrintWriter logger;
 	
 	public Controller() {
 		orderList = new HashMap<String, Integer>();
 		numberFormat = new DecimalFormat("##.0");
-		try {
-			logger = new PrintWriter(new File(GlobalConfiguration.getInstance().getConfPath() + "salesRecord.txt"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.err.println("Log file not found");
-			System.exit(-1);
-		}
 	}
 	
 	public void addToCart(Item item, int amount) throws OutOfStockException {
@@ -70,27 +61,21 @@ public class Controller {
 			Item item = ItemList.getInstance().getItemById(itemID);
 			Discount productDiscount = item.getDiscount();
 			float subTotal;
-			System.out.println(item); 
 			if (productDiscount != null) {
 				subTotal = item.getPrice() * orderList.get(itemID) * (1 - productDiscount.discount());
-				System.out.println(productDiscount.discountMessage() + productDiscount.discount());
 			} else {
 				subTotal = item.getPrice() * orderList.get(itemID);
-				System.out.println("No product discount");
 			}	
 			total += subTotal;
 		}
 		if (getTotalPrice() > GlobalConfiguration.getInstance().getSalesRequirement()) {
 			total *= (1 - GlobalConfiguration.getInstance().getSalesDiscount().discount());
-			System.out.println(GlobalConfiguration.getInstance().getSalesDiscount().discountMessage());
 		}
 		if (isVIP) {
 			total *= (1 - GlobalConfiguration.getInstance().getCustomerDiscount().discount());
-			System.out.println(GlobalConfiguration.getInstance().getCustomerDiscount().discountMessage());
 		}
 		if (isEventDiscount) {
 			total *= (1 - GlobalConfiguration.getInstance().getGlobalDiscount().discount());
-			System.out.println(GlobalConfiguration.getInstance().getGlobalDiscount().discountMessage());
 		}
 		return total;
 	}
@@ -104,7 +89,6 @@ public class Controller {
 	}
 	
 	public void addLog(String msg) {
-		logger.append(msg);
-		logger.close();
+		Logger.getInstance().addLog(msg);
 	}
 }
