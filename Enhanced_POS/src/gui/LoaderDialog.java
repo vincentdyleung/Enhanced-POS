@@ -12,9 +12,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * Loader Dialog for starting a new POS
+ * @author Liang Diyu dliang@stu.ust.hk
+ *
+ */
 public class LoaderDialog extends JDialog {
 	private JButton startButton;
 	
+	/**
+	 * Constructor for LoaderDialog
+	 */
 	public LoaderDialog() {
 		startButton = new JButton("Start");
 		JLabel startButtonLabel = new JLabel("Start a new POS");
@@ -43,6 +51,9 @@ public class LoaderDialog extends JDialog {
 		});
 	}
 	
+	/**
+	 * Start a new POS when Start button is clicked
+	 */
 	private void startPOS() {
 		LoginDialog login = new LoginDialog();
 		login.setLocationRelativeTo(this);

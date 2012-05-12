@@ -15,6 +15,11 @@ import javax.swing.JPanel;
 import core.Controller;
 import core.entities.UserList;
 
+/**
+ * POS Dialog to be shown when Start button is clicked in Loader Dialog
+ * @author Liang Diyu dliang@stu.ust.hk
+ *
+ */
 public class POSDialog extends JDialog{
 
 	private JButton infoButton;
@@ -30,6 +35,10 @@ public class POSDialog extends JDialog{
 	private Controller controller;
 	private JPanel payButtonPanel;
 	
+	/**
+	 * Constructor of POSDialog
+	 * @param _username
+	 */
 	public POSDialog(String _username) {
 		infoButton = new JButton();
 		infoButton.setForeground(Color.BLUE);
@@ -54,9 +63,10 @@ public class POSDialog extends JDialog{
 		posPanel.add(payButtonPanel, BorderLayout.SOUTH);
 		
 		payButton.addActionListener(new ActionListener() {
-
+			/**
+			 * Turn to Pay Panel when Pay button is clicked
+			 */
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				if (controller.getOrderList().isEmpty()) {
 					setWarningMessage("Invalid sales information");
 					return;
@@ -75,6 +85,10 @@ public class POSDialog extends JDialog{
 		});
 		
 		submitButton.addActionListener(new ActionListener() {
+			/**
+			 * Submit the payment when Submit button is clicked
+			 * Submit button is only visible in Pay Panel
+			 */
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if (controller.getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) < 0) {
@@ -108,6 +122,10 @@ public class POSDialog extends JDialog{
 		});
 		
 		backButton.addActionListener(new ActionListener() {
+			/**
+			 * Go back to POS Panel when Back button is clicked
+			 * Back button is only visible in Pay Panel
+			 */
 			public void actionPerformed(ActionEvent arg0) {
 				payPanel.setVisible(false);
 				infoButton.setText("Record sale information succeeded by user " + username);

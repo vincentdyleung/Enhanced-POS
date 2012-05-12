@@ -25,6 +25,11 @@ import conf.GlobalConfiguration;
 import core.entities.Item;
 import core.entities.ItemList;
 
+/**
+ * Panel for showing the billing information and submitting the amount to pay
+ * @author Liang Diyu dliang@stu.ust.hk
+ *
+ */
 public class PayPanel extends JPanel {
 	private JTextField totalPrice;
 	private JTextField discounted;
@@ -36,6 +41,12 @@ public class PayPanel extends JPanel {
 	private POSDialog parentDialog;
 	private JList shoppingCartList;
 	
+	/**
+	 * Constructor of PayPanel
+	 * @param _isVIP
+	 * @param _isEventDiscount
+	 * @param _parentDialog
+	 */
 	public PayPanel(boolean _isVIP, boolean _isEventDiscount, POSDialog _parentDialog) {
 		totalPrice = new JTextField(10);
 		totalPrice.setEnabled(false);
@@ -61,17 +72,17 @@ public class PayPanel extends JPanel {
 		paid.addKeyListener(new KeyListener() {
 
 			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 
 			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 
+			/**
+			 * Calculate the change right after the amount is typed in
+			 */
 			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
 				try {
 					float amountTyped = Float.valueOf(paid.getText());
 					float refundAmount = parentDialog.getController().getRefund(amountTyped, isVIP, isEventDiscount);

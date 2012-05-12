@@ -31,6 +31,11 @@ import core.OutOfStockException;
 import core.entities.Item;
 import core.entities.ItemList;
 
+/**
+ * Panel for adding products to the shopping cart
+ * @author Liang Diyu dliang@stu.ust.hk
+ *
+ */
 public class POSPanel extends JPanel {
 
 	private JTextField idInput;
@@ -45,6 +50,10 @@ public class POSPanel extends JPanel {
 	private JList shoppingCartList;
 	private DefaultListModel shoppingCartListModel;
 	
+	/**
+	 * Constructor of POSPanel
+	 * @param parent
+	 */
 	public POSPanel(POSDialog parent) {
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setGroupingUsed(false);
@@ -76,6 +85,9 @@ public class POSPanel extends JPanel {
 			productListModel.addElement(pairs.getValue().getItemName());
 		}
 		productList = new JList(productListModel) {
+			/**
+			 * Set a customized size for the productList
+			 */
 			@Override
 			public Dimension getPreferredScrollableViewportSize() {
 				return new Dimension (200, 300);
@@ -95,6 +107,9 @@ public class POSPanel extends JPanel {
 		
 		shoppingCartListModel = new DefaultListModel();
 		shoppingCartList = new JList(shoppingCartListModel) {
+			/**
+			 * Set a customized size for the shoppingCartList
+			 */
 			@Override
 			public Dimension getPreferredScrollableViewportSize() {
 				return new Dimension(200, 300);
@@ -103,6 +118,9 @@ public class POSPanel extends JPanel {
 		JScrollPane shoppingCartPane = new JScrollPane(shoppingCartList);
 		
 		toRightButton.addActionListener(new ActionListener() {
+			/**
+			 * Add a selected item to the shopping cart when To Right button is clicked
+			 */
 			public void actionPerformed(ActionEvent arg0) {
 				if (productList.isSelectionEmpty()) {
 					parentDialog.setWarningMessage("Please select product");
@@ -119,13 +137,15 @@ public class POSPanel extends JPanel {
 				} catch (NumberFormatException e) {
 					parentDialog.setWarningMessage("Please input correct amount");
 				} catch (OutOfStockException e) {
-					// TODO Auto-generated catch block
 					parentDialog.setWarningMessage("Stock not enough");
 				}
 			}
 		});
 		
 		toLeftButton.addActionListener(new ActionListener() {
+			/**
+			 * Remove the selected item from shopping cart when To Left button is clicked
+			 */
 			public void actionPerformed(ActionEvent arg0) {
 				if (shoppingCartList.isSelectionEmpty()) {
 					parentDialog.setWarningMessage("Please select in the shopping cart!");
@@ -137,6 +157,9 @@ public class POSPanel extends JPanel {
 		});
 		
 		clearButton.addActionListener(new ActionListener() {
+			/**
+			 * Clear the whole shopping cart when Clear button is clicked
+			 */
 			public void actionPerformed(ActionEvent arg0) {
 				parentDialog.getController().clearCart();
 				updateShoppingCartList();
@@ -144,6 +167,9 @@ public class POSPanel extends JPanel {
 		});
 		
 		addButton.addActionListener(new ActionListener() {
+			/**
+			 * Add the item specified by the item ID to the shopping cart
+			 */
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if (idInput.getText().equals("") && amountIDInput.getText().equals("")) {
@@ -158,7 +184,6 @@ public class POSPanel extends JPanel {
 				} catch (NullPointerException e) {
 					parentDialog.setWarningMessage("Product " + idInput.getText() + " does not exist");
 				} catch (OutOfStockException e) {
-					// TODO Auto-generated catch block
 					parentDialog.setWarningMessage("Stock not enough!");
 				}
 			}
@@ -172,17 +197,30 @@ public class POSPanel extends JPanel {
 		add(shoppingCartPane, BorderLayout.EAST);
 	}
 	
+	/**
+	 * Add the item to the shopping cart and update the display
+	 * @param item
+	 * @param amount
+	 * @throws OutOfStockException
+	 */
 	private void addToCart(Item item, int amount) throws OutOfStockException {
 		parentDialog.getController().addToCart(item, amount);
 		updateShoppingCartList();
 	}
 	
+	/**
+	 * Remove the selected item from shopping cart and update the display
+	 * @param itemName
+	 */
 	private void removeFromCart(String itemName) {
 		Item selectedItem = ItemList.getInstance().getItemByName(itemName);
 		parentDialog.getController().removeFromCart(selectedItem);
 		updateShoppingCartList();
 	}
 	
+	/**
+	 * Loop through the shopping cart from the controller and add them to the display
+	 */
 	public void updateShoppingCartList() {
 		shoppingCartListModel.clear();
 		DecimalFormat df = parentDialog.getController().getNumberFormat();

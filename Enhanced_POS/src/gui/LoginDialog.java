@@ -9,20 +9,19 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import conf.GlobalConfiguration;
 import core.entities.UserList;
 
+/**
+ * Login Dialog for user log in
+ * @author Liang Diyu dliang@stu.ust.hk
+ *
+ */
 public class LoginDialog extends JDialog {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private JTextField usernameInput;
 	private JPasswordField passwordInput;
 	private JButton signinButton;
@@ -31,6 +30,9 @@ public class LoginDialog extends JDialog {
 	private JButton warningButton;
 	private UserList users;
 	
+	/**
+	 * Constructor of LoginDialog
+	 */
 	public LoginDialog() {
 		usernameInput = new JTextField();
 		passwordInput = new JPasswordField();
@@ -57,16 +59,21 @@ public class LoginDialog extends JDialog {
 		buttonPanel.add(closeButton);
 		
 		closeButton.addActionListener(new ActionListener() {
+			/**
+			 * Close the dialog when Close button is clicked
+			 */
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				dispose();
 			}
 		});
 		
 		signinButton.addActionListener(new ActionListener() {
-
+			/**
+			 * Sign in to the POS with username and password provided by user
+			 * Validate the username and password with the record, show warning message if 
+			 * username and password is wrong
+			 */
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				String username = usernameInput.getText();
 				String password = passwordInput.getText();
 				if (username.equals("") || password.equals("")) {

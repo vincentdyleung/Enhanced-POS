@@ -1,8 +1,5 @@
 package core;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import conf.GlobalConfiguration;
@@ -11,15 +8,31 @@ import conf.discount.Discount;
 import core.entities.Item;
 import core.entities.ItemList;
 
+/**
+ * Controller for managing the shopping cart
+ * One controller instance for one POSDialog
+ * @author Liang Diyu dliang@stu.ust.hk
+ *
+ */
 public class Controller {
 	private HashMap<String, Integer> orderList;
 	private DecimalFormat numberFormat;
 	
+	/**
+	 * Constructor for Controller
+	 * The default format for number is one decimal place
+	 */
 	public Controller() {
 		orderList = new HashMap<String, Integer>();
 		numberFormat = new DecimalFormat("##.0");
 	}
 	
+	/**
+	 * Add an item to the shopping cart with the amount specified
+	 * @param item
+	 * @param amount
+	 * @throws OutOfStockException
+	 */
 	public void addToCart(Item item, int amount) throws OutOfStockException {
 		if (amount > item.getNumber()) {
 			throw new OutOfStockException();
@@ -29,22 +42,41 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Remove the item from shopping cart
+	 * @param item
+	 */
 	public void removeFromCart(Item item) {
 		orderList.remove(item.getItemID());
 	}
 	
+	/**
+	 * Clear the whole shopping cart
+	 */
 	public void clearCart() {
 		orderList.clear();
 	}
 	
+	/**
+	 * Getter of orderList
+	 * @return
+	 */
 	public HashMap<String, Integer> getOrderList() {
 		return orderList;
 	}
 	
+	/**
+	 * Getter of numberFormat
+	 * @return
+	 */
 	public DecimalFormat getNumberFormat() {
 		return numberFormat;
 	}
 	
+	/**
+	 * Calculate the total price (without discounts) of the whole shopping cart
+	 * @return
+	 */
 	public float getTotalPrice() {
 		float total = 0f;
 		for (String itemID : orderList.keySet()) {
@@ -55,6 +87,13 @@ public class Controller {
 		return total;
 	}
 	
+	/**
+	 * Calculate the price to be paid of the whole shopping cart after discounts
+	 * Discount strategy is read from GlobalConfiguration
+	 * @param isVIP
+	 * @param isEventDiscount
+	 * @return
+	 */
 	public float getTotalSum(boolean isVIP, boolean isEventDiscount) {
 		float total = 0f;
 		for (String itemID : orderList.keySet()) {
@@ -80,14 +119,31 @@ public class Controller {
 		return total;
 	}
 	
+	/**
+	 * Calculate the difference between the total price without discounts and with discounts
+	 * @param isVIP
+	 * @param isEventDiscount
+	 * @return
+	 */
 	public float getDiscounted(boolean isVIP, boolean isEventDiscount) {
 		return getTotalPrice() - getTotalSum(isVIP, isEventDiscount);
 	}
 	
+	/**
+	 * Calculate the change to be given to customer with the specified amount to be paid
+	 * @param paid
+	 * @param isVIP
+	 * @param isEventDiscount
+	 * @return
+	 */
 	public float getRefund(float paid, boolean isVIP, boolean isEventDiscount) {
 		return paid - getTotalSum(isVIP, isEventDiscount);
 	}
 	
+	/**
+	 * Add a sales record to the log file
+	 * @param msg
+	 */
 	public void addLog(String msg) {
 		Logger.getInstance().addLog(msg);
 	}
