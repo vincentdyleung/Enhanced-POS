@@ -31,11 +31,9 @@ public class Logger {
 			FileWriter fileWriter = new FileWriter(new File(configPath + LOG_FILE), true);
 			logger = new PrintWriter(fileWriter, true);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			System.err.println("Log file not found");
 			System.exit(-1);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
