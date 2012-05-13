@@ -55,6 +55,7 @@ public class LoaderDialog extends JDialog {
 	
 	/**
 	 * Start a new POS when Start button is clicked
+	 * Use the thread pool of Loader to manage the threads
 	 */
 	private void startPOS() {
 		LoginDialog login = new LoginDialog();

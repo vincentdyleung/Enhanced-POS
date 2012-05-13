@@ -119,8 +119,11 @@ public class LoginDialog extends JDialog implements Runnable{
 		this.pack();
 	}
 
+	/**
+	 * Implemented run method for the Runnable interface
+	 * Show Login Dialog when a new thread is created
+	 */
 	public void run() {
-		// TODO Auto-generated method stub
 		if (UserList.getInstance().isInitialized()) {
 			infoButton.setText("Connection succeeded, please sign in!");
 		} else {
