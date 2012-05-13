@@ -2,6 +2,9 @@ package core;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
+
 import conf.GlobalConfiguration;
 import conf.discount.Discount;
 
@@ -14,8 +17,9 @@ import core.entities.ItemList;
  * @author Liang Diyu dliang@stu.ust.hk
  *
  */
-public class Controller {
+public class Controller implements Observer {
 	private HashMap<String, Integer> orderList;
+	private HashMap<String, Integer> stockLevels;
 	private DecimalFormat numberFormat;
 	
 	/**
@@ -25,6 +29,8 @@ public class Controller {
 	public Controller() {
 		orderList = new HashMap<String, Integer>();
 		numberFormat = new DecimalFormat("##.0");
+		stockLevels = (HashMap<String, Integer>) Loader.getInstance().getStockLevels().clone();
+		Loader.getInstance().addObserver(this);
 	}
 	
 	/**
@@ -34,12 +40,11 @@ public class Controller {
 	 * @throws OutOfStockException
 	 */
 	public void addToCart(Item item, int amount) throws OutOfStockException {
-		if (amount > item.getNumber()) {
+		int prevLevel = stockLevels.get(item.getItemID());
+		if (amount > prevLevel) {
 			throw new OutOfStockException();
-		} else {
-			orderList.put(item.getItemID(), amount);
-			return;
 		}
+		orderList.put(item.getItemID(), amount);
 	}
 	
 	/**
@@ -146,5 +151,17 @@ public class Controller {
 	 */
 	public void addLog(String msg) {
 		Logger.getInstance().addLog(msg);
+	}
+
+	public void update(Observable o, Object arg) {
+		if (arg instanceof HashMap) {
+			stockLevels = (HashMap<String, Integer>) ((HashMap) arg).clone();
+		}
+	}
+	
+	public void updateGlobalStockLevels() throws OutOfStockException {
+		for (String itemID : orderList.keySet()) {
+			Loader.getInstance().deductStockLevel(itemID, orderList.get(itemID));
+		}
 	}
 }

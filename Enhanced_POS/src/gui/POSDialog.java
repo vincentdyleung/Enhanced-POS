@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import core.Controller;
+import core.OutOfStockException;
 
 /**
  * POS Dialog to be shown when Start button is clicked in Loader Dialog
@@ -92,6 +93,12 @@ public class POSDialog extends JDialog{
 				try {
 					if (controller.getRefund(payPanel.getPaidAmount(), vipCheckBox.isSelected(), eventDiscountCheckBox.isSelected()) < 0) {
 						setWarningMessage("Not enough money!");
+						return;
+					}
+					try {
+						controller.updateGlobalStockLevels();
+					} catch (OutOfStockException e1) {
+						setWarningMessage("Stock not enough");
 						return;
 					}
 					String log = "Purchase:\n" + username + " " + vipCheckBox.isSelected() + " " + 

@@ -124,8 +124,13 @@ public class POSPanel extends JPanel {
 				}
 				if (amountClickInput.getText().equals("")) {
 					parentDialog.setWarningMessage("Please input correct amount");
+					return;
 				}
 				try {
+					if (Integer.valueOf(amountClickInput.getText()) <= 0) {
+						parentDialog.setWarningMessage("Please input correct amount");
+						return;
+					}
 					String selectedItemName = (String) productList.getSelectedValue();
 					Item selectedItem = ItemList.getInstance().getItemByName(selectedItemName);
 					addToCart(selectedItem, Integer.valueOf(amountClickInput.getText()));
@@ -172,6 +177,10 @@ public class POSPanel extends JPanel {
 						parentDialog.setWarningMessage("Please input valid product ID and amount");
 						return;
 					} 
+					if (Integer.valueOf(amountIDInput.getText()) <= 0) {
+						parentDialog.setWarningMessage("Please input correct amount");
+						return;
+					}
 					Item item = ItemList.getInstance().getItemById(idInput.getText());
 					addToCart(item, Integer.valueOf(amountIDInput.getText()));
 					parentDialog.clearWarningMessage();
