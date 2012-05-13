@@ -2,6 +2,8 @@ package core;
 
 import java.util.HashMap;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import gui.LoaderDialog;
 import conf.GlobalConfiguration;
@@ -19,12 +21,15 @@ public class Loader extends Observable {
 	private GlobalConfiguration allConf;
 	private HashMap<String, Integer> stockLevels;
 	private static Loader instance;
+	private static Object syncObject = new Object();
+	private ExecutorService posThreadManager; 
 	
 	/**
 	 * Constructor of Loader
 	 */
 	private Loader() {
 		allConf = GlobalConfiguration.getInstance();
+		posThreadManager = Executors.newFixedThreadPool(3);
 		if (!allConf.load(null, null, null, null)) {
 			System.err.println("Configuration load error!");
 			System.exit(-1);
@@ -39,12 +44,16 @@ public class Loader extends Observable {
 	}
 	
 	/**
-	 * Get a Loader instance. Enforced Singleton pattern
+	 * Thread safe method to get a Loader instance. Enforced Singleton pattern
 	 * @return
 	 */
 	public static Loader getInstance() {
 		if (instance == null) {
-			instance = new Loader();
+			synchronized(syncObject) {
+				if (instance == null) {
+					instance = new Loader();
+				}
+			}
 		}
 		return instance;
 	}
@@ -71,6 +80,10 @@ public class Loader extends Observable {
 	 */
 	public HashMap<String, Integer> getStockLevels() {
 		return stockLevels;
+	}
+	
+	public ExecutorService getPOSThreadManager() {
+		return posThreadManager;
 	}
 	
 }

@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import core.Loader;
+
 /**
  * Loader Dialog for starting a new POS
  * @author Liang Diyu dliang@stu.ust.hk
@@ -45,6 +47,7 @@ public class LoaderDialog extends JDialog {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				System.out.println("POS Exit");
+				Loader.getInstance().getPOSThreadManager().shutdown();
 				System.exit(0);
 			}
 		});
@@ -56,6 +59,7 @@ public class LoaderDialog extends JDialog {
 	private void startPOS() {
 		LoginDialog login = new LoginDialog();
 		login.setLocationRelativeTo(this);
-		login.setVisible(true);
+		Thread newPOS = new Thread(login);
+		Loader.getInstance().getPOSThreadManager().execute(newPOS);
 	}
 }

@@ -45,6 +45,7 @@ public class GlobalConfiguration {
 	private SalesDiscount salesDiscount;
 	private float salesRequirement;
 	private boolean initialized;
+	private static Object syncObject = new Object();
 	
 	private GlobalConfiguration(){
 		this.saxReader = new SAXReader();
@@ -58,7 +59,11 @@ public class GlobalConfiguration {
 	
 	public static GlobalConfiguration getInstance(){
 		if(instance == null){
-			instance = new GlobalConfiguration();
+			synchronized(syncObject) {
+				if (instance == null) {
+					instance = new GlobalConfiguration();
+				}
+			}
 		}
 		return instance;
 	}

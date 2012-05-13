@@ -23,7 +23,7 @@ import core.entities.UserList;
  * @author Liang Diyu dliang@stu.ust.hk
  *
  */
-public class LoginDialog extends JDialog {
+public class LoginDialog extends JDialog implements Runnable{
 	private JTextField usernameInput;
 	private JPasswordField passwordInput;
 	private JButton signinButton;
@@ -106,11 +106,7 @@ public class LoginDialog extends JDialog {
 		add(mainPanel, BorderLayout.CENTER);
 		add(warningButton, BorderLayout.SOUTH);
 		add(infoButton, BorderLayout.NORTH);
-		if (UserList.getInstance().isInitialized()) {
-			infoButton.setText("Connection succeeded, please sign in!");
-		} else {
-			warningButton.setText("Connection failed");
-		}
+		
 		
 		addWindowListener(new WindowAdapter() {
 			/**
@@ -121,6 +117,17 @@ public class LoginDialog extends JDialog {
 			}
 		});
 		this.pack();
+	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		if (UserList.getInstance().isInitialized()) {
+			infoButton.setText("Connection succeeded, please sign in!");
+		} else {
+			warningButton.setText("Connection failed");
+		}
+		pack();
+		setVisible(true);
 	}
 
 }
