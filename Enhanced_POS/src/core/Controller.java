@@ -14,6 +14,7 @@ import core.entities.ItemList;
 /**
  * Controller for managing the shopping cart
  * One controller instance for one POSDialog
+ * Enforced observer pattern, Controller is an observer to Loader
  * @author Liang Diyu dliang@stu.ust.hk
  *
  */
@@ -153,12 +154,20 @@ public class Controller implements Observer {
 		Logger.getInstance().addLog(msg);
 	}
 
+	/**
+	 * Implementation of update method for an observer
+	 * Updates the copy of stockLevels of this Controller whenever the global stock level changed
+	 */
 	public void update(Observable o, Object arg) {
 		if (arg instanceof HashMap) {
 			stockLevels = (HashMap<String, Integer>) ((HashMap) arg).clone();
 		}
 	}
 	
+	/**
+	 * Update the global stock level when a purchase is finished
+	 * @throws OutOfStockException
+	 */
 	public void updateGlobalStockLevels() throws OutOfStockException {
 		for (String itemID : orderList.keySet()) {
 			Loader.getInstance().deductStockLevel(itemID, orderList.get(itemID));

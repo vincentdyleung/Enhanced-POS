@@ -9,6 +9,8 @@ import core.entities.ItemList;
 
 /**
  * Load the GlobalConfiguration and create a loader dialog for adding POS
+ * Enforced observer pattern, Loader is the subject for all Controller instances
+ * Enforced Singleton pattern, guarantee that only one Loader instance will be created for each run
  * @author Liang Diyu dliang@stu.ust.hk
  *
  */
@@ -17,6 +19,7 @@ public class Loader extends Observable {
 	private GlobalConfiguration allConf;
 	private HashMap<String, Integer> stockLevels;
 	private static Loader instance;
+	
 	/**
 	 * Constructor of Loader
 	 */
@@ -35,6 +38,10 @@ public class Loader extends Observable {
 		loaderDialog.setVisible(true);
 	}
 	
+	/**
+	 * Get a Loader instance. Enforced Singleton pattern
+	 * @return
+	 */
 	public static Loader getInstance() {
 		if (instance == null) {
 			instance = new Loader();
@@ -42,6 +49,12 @@ public class Loader extends Observable {
 		return instance;
 	}
 	
+	/**
+	 * Thread safe method for updating the stock levels accross all POS Dialogs
+	 * @param itemID
+	 * @param purchaseAmount
+	 * @throws OutOfStockException
+	 */
 	public synchronized void deductStockLevel(String itemID, int purchaseAmount) throws OutOfStockException {
 		int prevLevel = stockLevels.get(itemID);
 		if (purchaseAmount > prevLevel) {
@@ -52,10 +65,10 @@ public class Loader extends Observable {
 		notifyObservers(stockLevels);
 	}
 	
-	public int getStockLevel(String itemID) {
-		return stockLevels.get(itemID);
-	}
-	
+	/**
+	 * Getter for stockLevels
+	 * @return
+	 */
 	public HashMap<String, Integer> getStockLevels() {
 		return stockLevels;
 	}

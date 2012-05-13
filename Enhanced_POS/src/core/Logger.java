@@ -11,6 +11,7 @@ import conf.GlobalConfiguration;
 /**
  * Logger for sales information
  * Singleton design pattern is applied
+ * Enforced singleton pattern, guarantee that only one Logger instance will be created for each run
  * @author Liang Diyu dliang@stu.ust.hk
  *
  */
